@@ -1,0 +1,23 @@
+<!DOCTYPE HTML>
+<html lang="en-US">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<div class="lens">
+		<img src="medium_bw.jpg" alt="">
+	</div>
+
+	<!-- Courtesy of http://www.flickr.com/photos/werms/1041160802/sizes/o/in/photostream/ -->
+	<script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+	<script type="text/javascript" src="../js/jquery.lens.min.js"></script>
+	<script type="text/javascript">
+		$(function(){
+			$('.lens img').lens({
+				image: 'large.jpg'
+			});
+		})
+	</script>
+</body>
+</html>
