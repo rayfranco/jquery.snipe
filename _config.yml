@@ -1,6 +1,6 @@
 safe:        true
-auto:        true
-server:      true
+auto:        false
+server:      false
 server_port: 4000
 baseurl:    /
 url: http://localhost:4000
@@ -43,7 +43,7 @@ kramdown:
 project:
   name: jquery.snipe
   title: jquery.snipe.js
-  description: Sniper-lens-style zoom on images jQuery plugin
+  description: Sniper-lens-style zoom on images
   user: RayFranco
   userfull: Franco Bouly
   twitter: RayFranco
