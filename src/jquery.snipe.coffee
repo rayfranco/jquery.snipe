@@ -1,7 +1,7 @@
 $ = jQuery
 
 defaults =
-	class: 		'lens'
+	class: 		'snipe-lens'
 	size: 		200
 	animation: 	null
 	image: 		null
@@ -28,13 +28,10 @@ class Bounds
 	contains: (x,y) ->
 		@left < x < @right and @top < y < @bottom
 
-class Lens
+class Snipe
 	constructor: (@el, settings) ->
 		@body 		= $('body')
 		@settings 	= @makeSettings settings
-
-		console.log @settings.image
-
 		@offset 	= @el.position()
 		@lens 		= $('<div>').addClass(@settings.class).css(@settings.css).appendTo('body')
 		@ratioEl	= $('<img>').attr('src',@settings.image).css('display','block').appendTo(@el.parent())
@@ -62,8 +59,6 @@ class Lens
 		o
 
 	onMouseMove: (e) ->
-
-		console.log @ratioX
 
 		# Hide if out of bounds
 		@hide() if not @bounds.contains e.pageX, e.pageY  
@@ -95,6 +90,6 @@ class Lens
 		@
 
 (($) ->
-  $.fn.lens = (settings) ->
-    new Lens(@, settings).run()
+  $.fn.snipe = (settings) ->
+    new Snipe(@, settings).run()
 )(jQuery)
