@@ -1,0 +1,34 @@
+---
+layout: default
+title: Demo 1
+category: demo
+---
+
+*Basic jQuery approach*
+
+Insert the image :
+
+{% highlight html %}
+<img src="normal.jpg" id="snipe">
+{% endhighlight %}
+
+Target the image with the plugin by provinding the high definition URL to it :
+
+{% highlight javascript %}
+$('img#lens').lens({
+  image: 'large.jpg'
+});
+{% endhighlight %}
+
+Result :
+
+<img src="images/demo/sexy_normal_bw.jpg" id="demo1">
+
+<script type="text/javascript">
+	$(function(){
+		$('img#demo1').snipe({
+		  image: 'images/demo/sexy_large.jpg'
+		});
+	})
+
+</script>
