@@ -30,14 +30,17 @@ class Bounds
 
 class Snipe
 	constructor: (@el, settings) ->
-		@body 		= $('body')
-		@settings 	= @makeSettings settings
-		@offset 	= @el.position()
-		@lens 		= $('<div>').addClass(@settings.class).css(@settings.css).appendTo('body')
-		@ratioEl	= $('<img>').attr('src',@settings.image).css('display','block').appendTo(@el.parent())
-		@ratioX 	= 1
-		@ratioY 	= 1
-		@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
+		@el.load =>
+			@body 		= $('body')
+			@settings 	= @makeSettings settings
+			@offset 	= @el.position()
+			@lens 		= $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
+			@ratioEl	= $('<img>').load(=> @calculateRatio @).attr('src',@settings.image).css('display','none').appendTo(@el.parent())
+			@ratioX 	= 1
+			@ratioY 	= 1
+			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
+		@el.bind 'mousemove', (e) => @onMouseMove e
+		@el
 
 	makeSettings: (settings) ->
 		defaults.image = settings.image or @el.data('zoom') or @el.attr('src') or @el.find('a:first').attr('href') or @el.find('img:first').attr('src')
@@ -47,21 +50,23 @@ class Snipe
 		$.extend {}, defaults, settings
 
 	run: () ->
-		@ratioEl.load => @calculateRatio @
-		@show()
+		@hide()
 
 	calculateRatio: (o) ->
-		console.log(o.ratioEl.width(), o.el.width())
 		o.ratioX = o.ratioEl.width()  / o.el.width()
 		o.ratioY = o.ratioEl.height() / o.el.height()
-		console.log(o.ratioEl.width(), o.ratioEl.height())
 		o.ratioEl.remove()
+		o.lens.css(o.settings.css)
+		o.run()
 		o
 
 	onMouseMove: (e) ->
-
 		# Hide if out of bounds
-		@hide() if not @bounds.contains e.pageX, e.pageY  
+		if not @bounds?
+			return
+		else
+			@hide() if not @bounds.contains e.pageX, e.pageY
+		# todo: deal whith mouseover on load.
 
 		# Calculate background position
 		backgroundX = -((e.pageX - @offset.left) * @ratioX - @settings.size * .5) 
@@ -79,17 +84,18 @@ class Snipe
 
 	show: (animation = true) ->
 		@lens.show()
-		@el.unbind 'mouseenter'
+		@el.unbind 'mousemove'
+		@el.unbind 'mouseover'
 		@body.bind 'mousemove', (e) => @onMouseMove e
 		@
 
 	hide: (animation = true) ->
 		@lens.hide()
-		@el.bind 'mouseenter', (e) => @show()
+		@el.bind 'mouseover', (e) => @show()
 		@body.unbind 'mousemove'
 		@
 
 (($) ->
   $.fn.snipe = (settings) ->
-    new Snipe(@, settings).run()
+    new Snipe(@, settings)
 )(jQuery)
