@@ -9,9 +9,10 @@ defaults =
 		borderRadius:	200
 		width: 			200
 		height: 		200
-		border: 		'5px solid grey'
-		cursor: 		'crosshair'
+		border: 		'2px solid white'
+		cursor: 		'none'
 		backgroundColor:'white'
+		boxShadow:		'0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset'
 	zoomin: 	(lens) ->
 	zoomout: 	(lens) ->
 	zoommoved: 	(lend) ->
