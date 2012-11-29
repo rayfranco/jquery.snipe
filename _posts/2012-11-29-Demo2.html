@@ -1,10 +1,10 @@
 ---
 layout: default
-title: Demo 1
+title: Demo 2
 category: demo
 ---
 
-*Basic jQuery approach*
+*No configuration (href reference)*
 
 Insert the image :
 
@@ -22,12 +22,12 @@ $('img#snipe').lens({
 
 Result :
 
-<img src="images/demo/sexy_normal_bw.jpg" id="demo1">
+<a href="images/demo/sexy_large.jpg" id="demo2">
+	<img src="images/demo/sexy_normal_bw.jpg" id="demo2">
+</a>
 
 <script type="text/javascript">
 	$(function(){
-		$('img#demo1').snipe({
-		  image: 'images/demo/sexy_large.jpg'
-		});
-	})
+		$('img#demo2').snipe();
+	});
 </script>

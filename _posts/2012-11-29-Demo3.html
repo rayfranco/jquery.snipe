@@ -1,33 +1,29 @@
 ---
 layout: default
-title: Demo 1
+title: Demo 2
 category: demo
 ---
 
-*Basic jQuery approach*
+*No configuration (data-zoom reference)*
 
 Insert the image :
 
 {% highlight html %}
-<img src="normal.jpg" id="snipe">
+<img src="normal.jpg" data-zoom="large.jpg" id="snipe">
 {% endhighlight %}
 
 Target the image with the plugin by provinding the high definition URL to it :
 
 {% highlight javascript %}
-$('img#snipe').lens({
-  image: 'large.jpg'
-});
+$('img#snipe').lens();
 {% endhighlight %}
 
 Result :
 
-<img src="images/demo/sexy_normal_bw.jpg" id="demo1">
+<img src="images/demo/sexy_normal_bw.jpg" data-zoom="images/demo/sexy_large.jpg" id="demo3">
 
 <script type="text/javascript">
 	$(function(){
-		$('img#demo1').snipe({
-		  image: 'images/demo/sexy_large.jpg'
-		});
-	})
+		$('img#demo3').snipe();
+	});
 </script>

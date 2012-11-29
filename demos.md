@@ -14,4 +14,7 @@ Example {{ forloop.index }}
 ---------------------------
 
 {{ post.content }}
+
+-------------------
+
 {% endfor %}
