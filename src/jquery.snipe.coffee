@@ -13,6 +13,7 @@ defaults =
 		cursor: 		'none'
 		backgroundColor:'white'
 		boxShadow:		'0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset'
+		# 'transition': 	'opacity 0.1s ease-in-out' # what about a transition ?
 	zoomin: 	(lens) ->
 	zoomout: 	(lens) ->
 	zoommoved: 	(lend) ->
@@ -41,6 +42,12 @@ class Snipe
 			@offset 	= @el.position()
 			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
 		@el.bind 'mousemove', (e) => @onMouseMove e
+
+		# This is an idea to check css3 transition
+		# it should check first if css3 transition has been fired (transition start ?)
+		# @lens.data "transitioning" true
+		# @lens.on "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd", $(@).data("transitioning", false)
+		
 		return @el
 
 	makeSettings: (settings) ->
@@ -63,7 +70,7 @@ class Snipe
 
 	onMouseMove: (e) ->
 		# Hide if out of bounds
-		if not @bounds?
+		if not @bounds? and @lens.not(':animated')
 			return
 		else
 			@hide() if not @bounds.contains e.pageX, e.pageY
@@ -84,16 +91,16 @@ class Snipe
 	###
 
 	show: (animation = true) ->
-		@lens.show()
 		@el.unbind 'mousemove'
 		@el.unbind 'mouseover'
 		@body.bind 'mousemove', (e) => @onMouseMove e
+		@lens.show().css({opacity:1,cursor:@settings.css.cursor})
 		@
 
 	hide: (animation = true) ->
-		@lens.hide()
 		@el.bind 'mouseover', (e) => @show()
 		@body.unbind 'mousemove'
+		@lens.css({opacity:0,cursor:'default'}).hide();
 		@
 
 (($) ->
