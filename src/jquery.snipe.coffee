@@ -25,23 +25,23 @@ forcedCss =
 
 class Bounds
 	constructor: (@top, @right, @bottom, @left) ->
-		@
+		return @
 	contains: (x,y) ->
 		@left < x < @right and @top < y < @bottom
 
 class Snipe
 	constructor: (@el, settings) ->
+		@body 		= $('body')
+		@settings 	= @makeSettings settings
+		@lens 		= $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
+		@ratioX 	= 1
+		@ratioY 	= 1
+		@ratioEl	= $('<img>').load(=> @calculateRatio @).attr('src',@settings.image).css('display','none').appendTo(@el.parent())
 		@el.load =>
-			@body 		= $('body')
-			@settings 	= @makeSettings settings
 			@offset 	= @el.position()
-			@lens 		= $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
-			@ratioEl	= $('<img>').load(=> @calculateRatio @).attr('src',@settings.image).css('display','none').appendTo(@el.parent())
-			@ratioX 	= 1
-			@ratioY 	= 1
 			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
 		@el.bind 'mousemove', (e) => @onMouseMove e
-		@el
+		return @el
 
 	makeSettings: (settings) ->
 		defaults.image = settings.image or @el.data('zoom') or @el.attr('src') or @el.find('a:first').attr('href') or @el.find('img:first').attr('src')
