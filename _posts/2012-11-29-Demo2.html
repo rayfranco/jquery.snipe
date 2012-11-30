@@ -9,25 +9,25 @@ category: demo
 Insert the image :
 
 {% highlight html %}
-<img src="normal.jpg" id="snipe">
+<a href="large.html" id="snipe">
+	<img src="normal.jpg">	
+</a>
 {% endhighlight %}
 
 Target the image with the plugin by provinding the high definition URL to it :
 
 {% highlight javascript %}
-$('img#snipe').lens({
-  image: 'large.jpg'
-});
+$('a#snipe').lens();
 {% endhighlight %}
 
 Result :
 
 <a href="images/demo/sexy_large.jpg" id="demo2">
-	<img src="images/demo/sexy_normal_bw.jpg" id="demo2">
+	<img src="images/demo/sexy_normal_bw.jpg">
 </a>
 
 <script type="text/javascript">
 	$(function(){
-		$('img#demo2').snipe();
+		$('a#demo2').snipe();
 	});
 </script>
