@@ -6,7 +6,7 @@ defaults =
 	animation: 	null
 	image: 		null
 	cursor:		'none'
-	bound:		[]
+	bounds:		[]
 	css:
 		borderRadius:	200
 		width: 			200
@@ -36,7 +36,7 @@ class Snipe
 		@settings 	= @makeSettings settings
 		@el.one('load',=>
 			@offset 	= @el.position()
-			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
+			@bounds 	= @makeBounds()
 		).each(->
 			$(@).load() if @.complete
 		)
@@ -63,10 +63,16 @@ class Snipe
 
 		$.extend {}, defaults, settings
 
-	# not used yet
-	makeBounds: (bounds) ->
-		if bounds.length is 4
-			@bounds = new Bounds(bound)
+	# Check mouse events before using this
+	makeBounds: () ->
+		# if @settings.bounds? and @settings.bounds.length is 4
+		# 	@settings.bounds[0] += @offset.top
+		# 	@settings.bounds[1] += @offset.left + @el.width()
+		# 	@settings.bounds[2] += @offset.top + @el.height()
+		# 	@settings.bounds[3] += @offset.left
+		# 	return new Bounds @settings.bounds...
+		# else
+			return new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
 
 
 	run: () ->

@@ -33,7 +33,9 @@
 
 	<script type="text/javascript">
 		$(function(){
-			$('#demo1').snipe();
+			$('#demo1').snipe({
+				bounds: [10,-10,-10,10]
+			});
 			$('#demo2').snipe({
 				image: 'https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg'
 			});
