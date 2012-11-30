@@ -1,0 +1,19 @@
+{
+  "name": "jquery.snipe",
+  "version": "0.1.1",
+  "author": "RayFranco <fbouly@gmail.com>",
+  "description": "Add sniper-lens zoom effect to images",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RayFranco/jquery.snipe.git"
+  },
+  "dependencies" : {
+    "coffee-script"   :  "1.4.x"
+  },
+  "devDependencies": {
+    "buster"    :  "0.6.x",
+    "buster-html-doc" : "",
+    "buster-coffee" :  "0.x.x"
+  },
+  "license": "Apache 2.0"
+}
