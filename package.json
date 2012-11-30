@@ -8,7 +8,10 @@
     "url": "https://github.com/RayFranco/jquery.snipe.git"
   },
   "dependencies" : {
-    "coffee-script"   :  "1.4.x"
+  	"flour": "",
+    "uglify-js": "",
+    "coffee-script"   :  "1.4.x",
+    "jquery": ""
   },
   "devDependencies": {
     "buster"    :  "0.6.x",
