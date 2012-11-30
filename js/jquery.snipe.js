@@ -9,13 +9,12 @@
     size: 200,
     animation: null,
     image: null,
-    cursor: 'none',
-    bound: [],
     css: {
       borderRadius: 200,
       width: 200,
       height: 200,
       border: '2px solid white',
+      cursor: 'none',
       backgroundColor: 'white',
       boxShadow: '0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset'
     },
@@ -59,20 +58,16 @@
       }
       this.body = $('body');
       this.settings = this.makeSettings(settings);
-      this.el.one('load', function() {
-        _this.offset = _this.el.position();
-        return _this.bounds = new Bounds(_this.offset.top, _this.offset.left + _this.el.width(), _this.offset.top + _this.el.height(), _this.offset.left);
-      }).each(function() {
-        if (this.complete) {
-          return $(this).load();
-        }
-      });
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
       this.ratioX = 1;
       this.ratioY = 1;
       this.ratioEl = $('<img>').load(function() {
         return _this.calculateRatio(_this);
       }).attr('src', this.settings.image).css('display', 'none').appendTo(this.el.parent());
+      this.el.load(function() {
+        _this.offset = _this.el.position();
+        return _this.bounds = new Bounds(_this.offset.top, _this.offset.left + _this.el.width(), _this.offset.top + _this.el.height(), _this.offset.left);
+      });
       this.el.bind('mousemove', function(e) {
         return _this.onMouseMove(e);
       });
@@ -80,25 +75,10 @@
     }
 
     Snipe.prototype.makeSettings = function(settings) {
-      var img;
-      if (this.el.is('a')) {
-        img = this.el.find('img:first');
-        defaults.image = settings.image || this.el.attr('href');
-      } else {
-        img = this.el.is('img') ? this.el : this.el.find('img:first');
-        defaults.image = settings.image || this.el.data('zoom') || this.el.attr('src');
-      }
-      this.el = img;
+      defaults.image = settings.image || this.el.data('zoom') || this.el.attr('src') || this.el.find('a:first').attr('href') || this.el.find('img:first').attr('src');
       defaults.css.backgroundImage = "url(" + defaults.image + ")";
-      defaults.css.cursor = settings.cursor || defaults.cursor;
       defaults.css = $.extend({}, defaults.css, settings && settings.css, forcedCss);
       return $.extend({}, defaults, settings);
-    };
-
-    Snipe.prototype.makeBounds = function(bounds) {
-      if (bounds.length === 4) {
-        return this.bounds = new Bounds(bound);
-      }
     };
 
     Snipe.prototype.run = function() {

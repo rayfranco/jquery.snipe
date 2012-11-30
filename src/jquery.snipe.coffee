@@ -5,15 +5,15 @@ defaults =
 	size: 		200
 	animation: 	null
 	image: 		null
+	cursor:		'none'
+	bound:		[]
 	css:
 		borderRadius:	200
 		width: 			200
 		height: 		200
 		border: 		'2px solid white'
-		cursor: 		'none'
 		backgroundColor:'white'
 		boxShadow:		'0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset'
-		# 'transition': 	'opacity 0.1s ease-in-out' # what about a transition ?
 	zoomin: 	(lens) ->
 	zoomout: 	(lens) ->
 	zoommoved: 	(lend) ->
@@ -31,31 +31,43 @@ class Bounds
 		@left < x < @right and @top < y < @bottom
 
 class Snipe
-	constructor: (@el, settings) ->
+	constructor: (@el, settings = {}) ->
 		@body 		= $('body')
 		@settings 	= @makeSettings settings
+		@el.one('load',=>
+			@offset 	= @el.position()
+			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
+		).each(->
+			$(@).load() if @.complete
+		)
 		@lens 		= $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
 		@ratioX 	= 1
 		@ratioY 	= 1
 		@ratioEl	= $('<img>').load(=> @calculateRatio @).attr('src',@settings.image).css('display','none').appendTo(@el.parent())
-		@el.load =>
-			@offset 	= @el.position()
-			@bounds 	= new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
 		@el.bind 'mousemove', (e) => @onMouseMove e
 
-		# This is an idea to check css3 transition
-		# it should check first if css3 transition has been fired (transition start ?)
-		# @lens.data "transitioning" true
-		# @lens.on "transitionend MSTransitionEnd webkitTransitionEnd oTransitionEnd", $(@).data("transitioning", false)
-		
 		return @el
 
 	makeSettings: (settings) ->
-		defaults.image = settings.image or @el.data('zoom') or @el.attr('src') or @el.find('a:first').attr('href') or @el.find('img:first').attr('src')
+		if @el.is 'a'
+			img = @el.find('img:first')
+			defaults.image = settings.image or @el.attr('href')
+		else
+			img = if @el.is 'img' then @el else @el.find('img:first')
+			defaults.image = settings.image or @el.data('zoom') or @el.attr('src') 
+		@el = img
+
 		defaults.css.backgroundImage = "url("+ defaults.image + ")"
+		defaults.css.cursor = settings.cursor or defaults.cursor
 		defaults.css = $.extend {}, defaults.css, settings and settings.css, forcedCss
 
 		$.extend {}, defaults, settings
+
+	# not used yet
+	makeBounds: (bounds) ->
+		if bounds.length is 4
+			@bounds = new Bounds(bound)
+
 
 	run: () ->
 		@hide()
