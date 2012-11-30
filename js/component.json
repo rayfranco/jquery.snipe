@@ -1,0 +1,8 @@
+{
+    "name": "jquery.snipe",
+    "version": "1.0.beta",
+    "main": "./jquery.snipe.min.js",
+    "dependencies": {
+        "jquery": "~1.8.3"
+    }
+}
