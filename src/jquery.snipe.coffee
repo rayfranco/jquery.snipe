@@ -35,7 +35,7 @@ class Snipe
 		@body 		= $('body')
 		@settings 	= @makeSettings settings
 		@el.one('load',=>
-			@offset 	= @el.position()
+			@offset 	= @el.offset()
 			@bounds 	= @makeBounds()
 		).each(->
 			$(@).load() if @.complete

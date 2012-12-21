@@ -59,7 +59,7 @@
       this.body = $('body');
       this.settings = this.makeSettings(settings);
       this.el.one('load', function() {
-        _this.offset = _this.el.position();
+        _this.offset = _this.el.offset();
         return _this.bounds = _this.makeBounds();
       }).each(function() {
         if (this.complete) {
