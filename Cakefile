@@ -9,11 +9,10 @@ task 'setup', ->
 		util.log stdout
 
 task 'build:coffee', ->
-#	compile 'src/jquery.snipe.coffee', 'js/jquery.snipe.js', (output) ->
-    compile 'src/jquery.snipe.coffee', 'js/jquery.snipe.min.js', (output) ->
+    compile 'src/jquery.snipe.coffee', 'js/jquery.snipe.js', (output) ->
     	util.log 'CoffeeScript compiled !'
-#	   	minify 'js/jquery.snipe.js', 'js/jquery.snipe.min.js', (output) ->
-#			util.log 'Javascript Minified !'
+	   	minify 'js/jquery.snipe.js', 'js/jquery.snipe.min.js', (output) ->
+			util.log 'Javascript Minified !'
 
 task 'build', ->
 	invoke 'build:coffee'
