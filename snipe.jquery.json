@@ -1,0 +1,26 @@
+{
+  "name": "snipe",
+  "version": "0.1.2",
+  "title": "jquery.snipe",
+  "author": {
+    "name": "Franco Bouly",
+    "email": "fbouly@gmail.com",
+    "url": "http://rayfran.co"
+  },
+  "licenses": [
+    {
+      "type": "Apache-2.0",
+      "url": "https://raw.github.com/RayFranco/jquery.snipe/master/LICENSE"
+    }
+  ],
+  "dependencies": {
+    "jquery": "~1.8.3"
+  },
+  "description": "jQuery plugin to add a sniper-lens-style zoom on images.",
+  "keywords": ["zoom","images","loupe","magnify","glass","lense"],
+  "homepage": "http://rayfranco.github.com/jquery.snipe/",
+  "docs": "http://rayfranco.github.com/jquery.snipe/index.html",
+  "demo": "http://rayfranco.github.com/jquery.snipe/demos.html",
+  "download": "https://github.com/RayFranco/jquery.snipe/zipball/master",
+  "bugs": "https://github.com/RayFranco/jquery.snipe/issues?state=open"
+}
