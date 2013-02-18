@@ -33,6 +33,7 @@ class Bounds
 class Snipe
 	constructor: (@el, settings = {}) ->
 		@body 		= $('body')
+		@defaults = $.extend {}, defaults
 		@settings 	= @makeSettings settings
 		@el.one('load',=>
 			@offset 	= @el.offset()
@@ -51,17 +52,17 @@ class Snipe
 	makeSettings: (settings) ->
 		if @el.is 'a'
 			img = @el.find('img:first')
-			defaults.image = settings.image or @el.attr('href')
+			@defaults.image = settings.image or @el.attr('href')
 		else
 			img = if @el.is 'img' then @el else @el.find('img:first')
-			defaults.image = settings.image or @el.data('zoom') or @el.attr('src') 
+			@defaults.image = settings.image or @el.data('zoom') or @el.attr('src') 
 		@el = img
 
-		defaults.css.backgroundImage = "url("+ defaults.image + ")"
-		defaults.css.cursor = settings.cursor or defaults.cursor
-		defaults.css = $.extend {}, defaults.css, settings and settings.css, forcedCss
+		@defaults.css.backgroundImage = "url("+ @defaults.image + ")"
+		@defaults.css.cursor = settings.cursor or @defaults.cursor
+		@defaults.css = $.extend {}, @defaults.css, settings and settings.css, forcedCss
 
-		$.extend {}, defaults, settings
+		$.extend {}, @defaults, settings
 
 	# Check mouse events before using this
 	makeBounds: () ->
