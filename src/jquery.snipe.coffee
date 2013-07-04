@@ -37,8 +37,7 @@ class Snipe
     @defaults   = defaultsSettings
     @makeSettings settings
     @el.one('load',=>
-      @offset   = @el.offset()
-      @bounds   = @makeBounds()
+      @makeBounds()
     ).each(->
       $(@).load() if @.complete
     )
@@ -46,7 +45,15 @@ class Snipe
     @lens     = $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
     @ratioX   = 1
     @ratioY   = 1
-    @ratioEl  = $('<img>').load(=> @calculateRatio @).attr('src',@settings.image).css('display','none').appendTo(@el.parent())
+
+    @ratioEl  = $('<img>').attr('src',@settings.image)
+
+    @ratioEl.one('load',=>
+      @calculateRatio.call(@)
+    ).each(->
+      $(@).load() if @.complete
+    )
+    
     @el.bind 'mousemove', (e) => @onMouseMove e
 
     return @el
@@ -68,26 +75,19 @@ class Snipe
 
   # Check mouse events before using this
   makeBounds: () ->
-    # if @settings.bounds? and @settings.bounds.length is 4
-    #   @settings.bounds[0] += @offset.top
-    #   @settings.bounds[1] += @offset.left + @el.width()
-    #   @settings.bounds[2] += @offset.top + @el.height()
-    #   @settings.bounds[3] += @offset.left
-    #   return new Bounds @settings.bounds...
-    # else
-      return new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
+    @offset   = @el.offset()
+    @bounds   = new Bounds @offset.top, @offset.left + @el.width(), @offset.top + @el.height(), @offset.left
 
 
   run: () ->
     @hide()
 
-  calculateRatio: (o) ->
-    o.ratioX = o.ratioEl.width()  / o.el.width()
-    o.ratioY = o.ratioEl.height() / o.el.height()
-    o.ratioEl.remove()
-    o.lens.css(o.settings.css)
-    o.run()
-    o
+  calculateRatio: () ->
+    @ratioX = @ratioEl[0].width  / @el[0].width
+    @ratioY = @ratioEl[0].height / @el[0].height
+    @ratioEl.remove()
+    @lens.css(@settings.css)
+    @run()
 
   onMouseMove: (e) ->
     # Hide if out of bounds
@@ -107,11 +107,15 @@ class Snipe
       top: e.pageY - @settings.size * .5
       backgroundPosition: "#{backgroundX}px #{backgroundY}px"
 
+
   ### 
   API Methods 
   ###
 
   show: (animation = true) ->
+    # Reset bounds
+    @makeBounds()
+
     @el.unbind 'mousemove'
     @el.unbind 'mouseover'
     @body.bind 'mousemove', (e) => @onMouseMove e

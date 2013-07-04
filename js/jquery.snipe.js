@@ -62,20 +62,23 @@
       this.defaults = defaultsSettings;
       this.makeSettings(settings);
       this.el.one('load', function() {
-        _this.offset = _this.el.offset();
-        return _this.bounds = _this.makeBounds();
+        return _this.makeBounds();
       }).each(function() {
         if (this.complete) {
           return $(this).load();
         }
       });
-      console.log('settings', this.settings);
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
       this.ratioX = 1;
       this.ratioY = 1;
-      this.ratioEl = $('<img>').load(function() {
-        return _this.calculateRatio(_this);
-      }).attr('src', this.settings.image).css('display', 'none').appendTo(this.el.parent());
+      this.ratioEl = $('<img>').attr('src', this.settings.image);
+      this.ratioEl.one('load', function() {
+        return _this.calculateRatio.call(_this);
+      }).each(function() {
+        if (this.complete) {
+          return $(this).load();
+        }
+      });
       this.el.bind('mousemove', function(e) {
         return _this.onMouseMove(e);
       });
@@ -99,20 +102,20 @@
     };
 
     Snipe.prototype.makeBounds = function() {
-      return new Bounds(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
+      this.offset = this.el.offset();
+      return this.bounds = new Bounds(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
     };
 
     Snipe.prototype.run = function() {
       return this.hide();
     };
 
-    Snipe.prototype.calculateRatio = function(o) {
-      o.ratioX = o.ratioEl.width() / o.el.width();
-      o.ratioY = o.ratioEl.height() / o.el.height();
-      o.ratioEl.remove();
-      o.lens.css(o.settings.css);
-      o.run();
-      return o;
+    Snipe.prototype.calculateRatio = function() {
+      this.ratioX = this.ratioEl[0].width / this.el[0].width;
+      this.ratioY = this.ratioEl[0].height / this.el[0].height;
+      this.ratioEl.remove();
+      this.lens.css(this.settings.css);
+      return this.run();
     };
 
     Snipe.prototype.onMouseMove = function(e) {
@@ -143,6 +146,7 @@
       if (animation == null) {
         animation = true;
       }
+      this.makeBounds();
       this.el.unbind('mousemove');
       this.el.unbind('mouseover');
       this.body.bind('mousemove', function(e) {
