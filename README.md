@@ -1,5 +1,3 @@
-**Note:** This is in a very early stage of development. Don't use it in production !
-
 [jquery.snipe](http://rayfranco.github.com/jquery.snipe)
 ==============
 
