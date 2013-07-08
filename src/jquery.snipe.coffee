@@ -41,7 +41,8 @@ class Snipe
     ).each(->
       $(@).load() if @.complete
     )
-
+    @el.data 'snipe', this
+    
     @lens     = $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
     @ratioX   = 1
     @ratioY   = 1
@@ -130,5 +131,6 @@ class Snipe
 
 (($) ->
   $.fn.snipe = (settings) ->
-    new Snipe(@, settings)
+    @each () ->
+      return $(@).data('snipe') or new Snipe($(@), settings)
 )(jQuery)

@@ -68,6 +68,7 @@
           return $(this).load();
         }
       });
+      this.el.data('snipe', this);
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
       this.ratioX = 1;
       this.ratioY = 1;
@@ -181,7 +182,9 @@
 
   (function($) {
     return $.fn.snipe = function(settings) {
-      return new Snipe(this, settings);
+      return this.each(function() {
+        return $(this).data('snipe') || new Snipe($(this), settings);
+      });
     };
   })(jQuery);
 
