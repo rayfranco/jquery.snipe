@@ -1,9 +1,14 @@
 (function() {
-  var $, Bounds, Snipe, defaultsSettings, forceSettings;
+  var $, Bounds, Snipe, defaults;
 
   $ = jQuery;
 
-  defaultsSettings = {
+  /*
+  Defaults plugin settings
+  */
+
+
+  defaults = {
     "class": 'snipe-lens',
     size: 200,
     animation: null,
@@ -16,24 +21,18 @@
       height: 200,
       border: '2px solid white',
       backgroundColor: 'white',
-      boxShadow: '0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset'
-    },
-    zoomin: function(lens) {},
-    zoomout: function(lens) {},
-    zoommoved: function(lend) {}
-  };
-
-  forceSettings = {
-    css: {
+      boxShadow: '0 0 10px #777, 0 0 8px black inset, 0 0 80px white inset',
       position: 'absolute',
       top: 0,
       left: 0,
       backgroundRepeat: 'no-repeat'
-    }
+    },
+    zoomin: function(lens) {},
+    zoomout: function(lens) {},
+    zoommoved: function(lens) {}
   };
 
   Bounds = (function() {
-
     function Bounds(top, right, bottom, left) {
       this.top = top;
       this.right = right;
@@ -41,6 +40,13 @@
       this.left = left;
       return this;
     }
+
+    Bounds.prototype.update = function(top, right, bottom, left) {
+      this.top = top;
+      this.right = right;
+      this.bottom = bottom;
+      this.left = left;
+    };
 
     Bounds.prototype.contains = function(x, y) {
       return (this.left < x && x < this.right) && (this.top < y && y < this.bottom);
@@ -51,28 +57,44 @@
   })();
 
   Snipe = (function() {
-
     function Snipe(el, settings) {
       var _this = this;
       this.el = el;
       if (settings == null) {
         settings = {};
       }
-      this.body = $('body');
-      this.defaults = defaultsSettings;
-      this.makeSettings(settings);
+      this._makeSettings(settings);
+      /*
+      Not sure this is working, would it help make the loading better ? Mwahhh...
+      */
+
       this.el.one('load', function() {
-        return _this.makeBounds();
-      }).each(function() {
-        if (this.complete) {
-          return $(this).load();
-        }
+        return _this._makeBounds();
       });
+      if (this.complete) {
+        this.el.load();
+      }
+      /*
+      Attach a self reference to the DOM. Allow usage of the API
+      */
+
       this.el.data('snipe', this);
+      /*
+      Create the lens and keep a reference to it
+      */
+
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
+      /*
+      Initialize ratio properties
+      */
+
       this.ratioX = 1;
       this.ratioY = 1;
       this.ratioEl = $('<img>').attr('src', this.settings.image);
+      /*
+      Load ration image
+      */
+
       this.ratioEl.one('load', function() {
         return _this.calculateRatio.call(_this);
       }).each(function() {
@@ -80,13 +102,21 @@
           return $(this).load();
         }
       });
+      /*
+      Listen to mousemove on the element
+      */
+
       this.el.bind('mousemove', function(e) {
         return _this.onMouseMove(e);
       });
+      /*
+      Return the element, allow chaining
+      */
+
       return this.el;
     }
 
-    Snipe.prototype.makeSettings = function(settings) {
+    Snipe.prototype._makeSettings = function(settings) {
       var img;
       if (this.el.is('a')) {
         img = this.el.find('img:first');
@@ -102,16 +132,22 @@
       return this.settings.css = $.extend({}, this.defaults.css, settings && settings.css, forceSettings.css);
     };
 
-    Snipe.prototype.makeBounds = function() {
+    /*
+    This method will be called on init
+    */
+
+
+    Snipe.prototype._makeBounds = function() {
       this.offset = this.el.offset();
       return this.bounds = new Bounds(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
     };
 
-    Snipe.prototype.run = function() {
-      return this.hide();
-    };
+    /*
+    This should be called when the ratio element is ready
+    */
 
-    Snipe.prototype.calculateRatio = function() {
+
+    Snipe.prototype._makeRatio = function() {
       this.ratioX = this.ratioEl[0].width / this.el[0].width;
       this.ratioY = this.ratioEl[0].height / this.el[0].height;
       this.ratioEl.remove();
@@ -119,9 +155,24 @@
       return this.run();
     };
 
-    Snipe.prototype.onMouseMove = function(e) {
+    /*
+    This method should be called on every reflow
+    */
+
+
+    Snipe.prototype._updateBounds = function() {
+      this.offset = this.el.offset();
+      return this.bounds.update(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
+    };
+
+    /*
+    This method will be called when the mouse move over the element
+    */
+
+
+    Snipe.prototype._onMouseMove = function(e) {
       var backgroundX, backgroundY;
-      if (!(this.bounds != null) && this.lens.not(':animated')) {
+      if ((this.bounds == null) && this.lens.not(':animated')) {
         return;
       } else {
         if (!this.bounds.contains(e.pageX, e.pageY)) {
@@ -137,16 +188,22 @@
       });
     };
 
+    /*
+    This will be called when everything is ready
+    */
+
+
+    Snipe.prototype._run = function() {
+      return this.hide();
+    };
+
     /* 
     API Methods
     */
 
 
-    Snipe.prototype.show = function(animation) {
+    Snipe.prototype.show = function() {
       var _this = this;
-      if (animation == null) {
-        animation = true;
-      }
       this.makeBounds();
       this.el.unbind('mousemove');
       this.el.unbind('mouseover');
@@ -160,11 +217,8 @@
       return this;
     };
 
-    Snipe.prototype.hide = function(animation) {
+    Snipe.prototype.hide = function() {
       var _this = this;
-      if (animation == null) {
-        animation = true;
-      }
       this.el.bind('mouseover', function(e) {
         return _this.show();
       });

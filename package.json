@@ -7,16 +7,15 @@
     "type": "git",
     "url": "https://github.com/RayFranco/jquery.snipe.git"
   },
-  "dependencies" : {
-  	"flour": "",
-    "uglify-js": "",
-    "coffee-script"   :  "1.4.x",
-    "jquery": ""
-  },
+  "dependencies": {},
   "devDependencies": {
-    "buster"    :  "0.6.x",
-    "buster-html-doc" : "",
-    "buster-coffee" :  "0.x.x"
+    "grunt": "~0.4.1",
+    "grunt-contrib-jasmine": "~0.5.1",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-uglify": "~0.2.2",
+    "grunt-contrib-watch": "~0.4.4",
+    "grunt-contrib-connect": "~0.3.0",
+    "grunt-contrib-coffee": "~0.7.0"
   },
   "license": "Apache-2.0"
 }
