@@ -22,7 +22,7 @@ module.exports = (grunt) ->
         files: [
           'js/jquery.snipe.js'
         ]
-        tasks: ['uglify']
+        tasks: ['test','uglify']
         options:
           livereload: true
       demo:
@@ -32,12 +32,30 @@ module.exports = (grunt) ->
         ]
         options:
           livereload: true
+      specs:
+        files: [
+          'spec/SnipeSpec.js'
+          'spec/SpecRunner.tmpl'
+        ]
+        tasks: ['jasmine']
+        options:
+          livereload: true
 
     connect:
       preview:
         options:
           port: 9000
           base: './'
+
+    jasmine:
+      plugin:
+        src: 'js/jquery.snipe.js'
+        options:
+          specs: 'spec/SnipeSpec.js'
+          template: 'spec/SpecRunner.tmpl'
+          vendor: 'http://code.jquery.com/jquery-1.10.1.min.js'
+          keepRunner: true
+
 
   grunt.loadNpmTasks 'grunt-contrib-jasmine'
   grunt.loadNpmTasks 'grunt-contrib-coffee'
@@ -48,5 +66,5 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['preview']
 
-  grunt.registerTask 'preview', ['connect','watch','coffee']
-  grunt.registerTask 'build', ['coffee', 'uglify']
+  grunt.registerTask 'preview', ['coffee','jasmine','connect','watch']
+  grunt.registerTask 'build', ['coffee', 'jasmine','uglify']

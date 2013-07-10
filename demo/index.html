@@ -12,22 +12,22 @@
 
 	<div>
 		<h1>Demo 1</h1>
-		<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" id="demo1" data-zoom="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg" alt="">
+		<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" id="demo1" data-zoom="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg" data-ratio="1.6" width="500" height="336" alt="">
 	</div>
 
 	<!-- demo 2 -->
 
 	<div>
 		<h1>Demo 2</h1>
-		<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" id="demo2" alt="">
+		<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" id="demo2" width="500" height="336" alt="">
 	</div>
 
 	<!-- demo 3 -->
 
 	<div>
 		<h1>Demo 3</h1>
-		<a href="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg" id="demo3">
-			<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" alt="">
+		<a href="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg" id="demo3" data-width="800" data-height="538">
+			<img src="https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_normal_bw.jpg" width="500" height="336" alt="">
 		</a>
 	</div>
 
@@ -35,7 +35,7 @@
 	<div>
 		<h1>Demo 4</h1>
 		<a href="large.jpg" id="demo4">
-			<img src="medium_bw.jpg" alt="">
+			<img src="medium_bw.jpg" width="500" height="336" alt="">
 		</a>
 	</div>
 
@@ -45,7 +45,11 @@
 				bounds: [10,-10,-10,10]
 			});
 			$('#demo2').snipe({
-				image: 'https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg'
+				zoom: {
+					url: 'https://raw.github.com/RayFranco/jquery.snipe/gh-pages/images/demo/sexy_large.jpg',
+					width: 800,
+					height: 538
+				}
 			});
 			$('#demo3').snipe();
 

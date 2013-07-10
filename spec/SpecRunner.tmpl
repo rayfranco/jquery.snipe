@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Jasmine Spec Runner</title>
+
+  <link rel="stylesheet" type="text/css" href=".grunt/grunt-contrib-jasmine/jasmine.css">
+
+  <!-- Used for reflows testing -->
+  <div id="reflow"></div>
+
+  <!-- Used for basic initialisation testing -->
+  <div id="init1">
+    <a href="imagebig.png">
+      <img src="imagesmall.png" alt="">
+    </a>
+  </div>
+
+  <!-- Used for custom initialisation testing -->
+  <div id="init2">
+    <a href="imagebig.png">
+      <img src="imagesmall.png" alt="">
+    </a>
+  </div>
+
+
+  <!-- The following blocks are used for different syntaxes testing -->
+  
+  <div id="test1">
+    <a href="imagebig.png">
+      <img src="imagesmall.png" alt="">
+    </a>
+  </div>
+
+  <div id="test2">
+    <img src="imagesmall.png" data-snipe="imagebig.png" alt="">
+  </div>
+
+  <div id="test3">
+    <img src="imagesmall.png" alt="">
+  </div>
+  
+  <script src="http://code.jquery.com/jquery-1.9.0.min.js"></script>
+  <script src=".grunt/grunt-contrib-jasmine/phantom-polyfill.js"></script>
+  <script src=".grunt/grunt-contrib-jasmine/jasmine.js"></script>
+  <script src=".grunt/grunt-contrib-jasmine/jasmine-html.js"></script>
+  <script src="js/jquery.snipe.js"></script>
+  <script src="spec/SnipeSpec.js"></script>
+  <script src=".grunt/grunt-contrib-jasmine/reporter.js"></script>
+  <script src=".grunt/grunt-contrib-jasmine/jasmine-helper.js"></script>
+</head>
+<body>
+</body>
+</html>

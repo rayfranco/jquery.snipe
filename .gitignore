@@ -1,5 +1,6 @@
-.DS_Store
+.grunt
 npm-debug.log
+_SpecRunner.html
 _site/
 node_modules/
 vendor/

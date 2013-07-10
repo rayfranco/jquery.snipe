@@ -11,10 +11,17 @@
   defaults = {
     "class": 'snipe-lens',
     size: 200,
-    animation: null,
-    image: null,
-    cursor: 'none',
-    bounds: [],
+    ratio: null,
+    image: {
+      url: null,
+      width: null,
+      height: null
+    },
+    zoom: {
+      url: null,
+      width: null,
+      height: null
+    },
     css: {
       borderRadius: 200,
       width: 200,
@@ -63,52 +70,44 @@
       if (settings == null) {
         settings = {};
       }
-      this._makeSettings(settings);
       /*
-      Not sure this is working, would it help make the loading better ? Mwahhh...
+      Make the global settings object
       */
 
-      this.el.one('load', function() {
-        return _this._makeBounds();
-      });
-      if (this.complete) {
-        this.el.load();
-      }
+      this._makeSettings(settings);
+      /*
+      Make ratio
+      */
+
+      this._makeRatio();
+      /*
+      Make Bounds, will not work well if image size is not defined !
+      */
+
+      this._makeBounds();
       /*
       Attach a self reference to the DOM. Allow usage of the API
       */
 
       this.el.data('snipe', this);
       /*
-      Create the lens and keep a reference to it
+      Create the lens, apply CSS and keep a reference to it
       */
 
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
-      /*
-      Initialize ratio properties
-      */
-
-      this.ratioX = 1;
-      this.ratioY = 1;
-      this.ratioEl = $('<img>').attr('src', this.settings.image);
-      /*
-      Load ration image
-      */
-
-      this.ratioEl.one('load', function() {
-        return _this.calculateRatio.call(_this);
-      }).each(function() {
-        if (this.complete) {
-          return $(this).load();
-        }
-      });
+      this.lens.css(this.settings.css);
       /*
       Listen to mousemove on the element
       */
 
-      this.el.bind('mousemove', function(e) {
-        return _this.onMouseMove(e);
+      this.img.bind('mousemove', function(e) {
+        return _this._onMouseMove(e);
       });
+      /*
+      Run
+      */
+
+      this._run();
       /*
       Return the element, allow chaining
       */
@@ -117,19 +116,34 @@
     }
 
     Snipe.prototype._makeSettings = function(settings) {
-      var img;
-      if (this.el.is('a')) {
-        img = this.el.find('img:first');
-        this.defaults.image = settings.image || this.el.attr('href');
-      } else {
-        img = this.el.is('img') ? this.el : this.el.find('img:first');
-        this.defaults.image = settings.image || this.el.data('zoom') || this.el.attr('src');
+      var _base, _base1, _base2, _base3, _base4, _base5, _base6, _base7;
+      this.settings = $.extend(true, {}, defaults, settings);
+      this.img = this.el.is('img') ? this.el : this.el.find('img:first');
+      if ((_base = this.settings.image).url == null) {
+        _base.url = this.el.data('zoom') || this.img.data('zoom') || this.el.attr('href') || this.img.attr('src');
       }
-      this.el = img;
-      this.defaults.css.backgroundImage = "url(" + this.defaults.image + ")";
-      this.defaults.css.cursor = settings.cursor || this.defaults.cursor;
-      this.settings = $.extend({}, this.defaults, settings, forceSettings);
-      return this.settings.css = $.extend({}, this.defaults.css, settings && settings.css, forceSettings.css);
+      if ((_base1 = this.settings.image).url == null) {
+        _base1.url = this.img.attr('src');
+      }
+      if ((_base2 = this.settings.image).width == null) {
+        _base2.width = this.img[0].width;
+      }
+      if ((_base3 = this.settings.image).height == null) {
+        _base3.height = this.img[0].height;
+      }
+      if ((_base4 = this.settings.zoom).url == null) {
+        _base4.url = this.el.data('zoom') || this.settings.image.url;
+      }
+      if ((_base5 = this.settings.zoom).width == null) {
+        _base5.width = this.el.data('width') || this.settings.image.width;
+      }
+      if ((_base6 = this.settings.zoom).height == null) {
+        _base6.height = this.el.data('height') || this.settings.image.height;
+      }
+      if ((_base7 = this.settings).ratio == null) {
+        _base7.ratio = this.el.data('ratio') || null;
+      }
+      return this.settings.css.backgroundImage = "url(" + this.settings.zoom.url + ")";
     };
 
     /*
@@ -138,8 +152,9 @@
 
 
     Snipe.prototype._makeBounds = function() {
-      this.offset = this.el.offset();
-      return this.bounds = new Bounds(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
+      this.offset = this.img.offset();
+      delete this.bounds;
+      return this.bounds = new Bounds(this.offset.top, this.offset.left + this.img.width(), this.offset.top + this.img.height(), this.offset.left);
     };
 
     /*
@@ -148,11 +163,12 @@
 
 
     Snipe.prototype._makeRatio = function() {
-      this.ratioX = this.ratioEl[0].width / this.el[0].width;
-      this.ratioY = this.ratioEl[0].height / this.el[0].height;
-      this.ratioEl.remove();
-      this.lens.css(this.settings.css);
-      return this.run();
+      if (this.settings.ratio) {
+        return this.ratioX = this.ratioY = this.settings.ratio;
+      } else {
+        this.ratioX = this.settings.zoom.width / this.settings.image.width;
+        return this.ratioY = this.settings.zoom.height / this.settings.image.height;
+      }
     };
 
     /*
@@ -161,8 +177,8 @@
 
 
     Snipe.prototype._updateBounds = function() {
-      this.offset = this.el.offset();
-      return this.bounds.update(this.offset.top, this.offset.left + this.el.width(), this.offset.top + this.el.height(), this.offset.left);
+      this.offset = this.img.offset();
+      return this.bounds.update(this.offset.top, this.offset.left + this.img.width(), this.offset.top + this.img.height(), this.offset.left);
     };
 
     /*
@@ -172,20 +188,18 @@
 
     Snipe.prototype._onMouseMove = function(e) {
       var backgroundX, backgroundY;
-      if ((this.bounds == null) && this.lens.not(':animated')) {
+      if (!this.bounds.contains(e.pageX, e.pageY)) {
+        this.hide();
         return;
-      } else {
-        if (!this.bounds.contains(e.pageX, e.pageY)) {
-          this.hide();
-        }
       }
       backgroundX = -((e.pageX - this.offset.left) * this.ratioX - this.settings.size * .5);
       backgroundY = -((e.pageY - this.offset.top) * this.ratioY - this.settings.size * .5);
-      return this.lens.css({
+      this.lens.css({
         left: e.pageX - this.settings.size * .5,
         top: e.pageY - this.settings.size * .5,
         backgroundPosition: "" + backgroundX + "px " + backgroundY + "px"
       });
+      return backgroundX = backgroundY = null;
     };
 
     /*
@@ -194,7 +208,18 @@
 
 
     Snipe.prototype._run = function() {
-      return this.hide();
+      var _this = this;
+      this.hide();
+      $('body').on('mousemove.snipe', function(e) {
+        e.stopPropagation();
+        return _this._onMouseMove.call(_this, e);
+      });
+      return this.img.on('mousemove.snipe', function(e) {
+        e.stopPropagation();
+        if (_this.off) {
+          return _this.show.call(_this);
+        }
+      });
     };
 
     /* 
@@ -203,30 +228,18 @@
 
 
     Snipe.prototype.show = function() {
-      var _this = this;
-      this.makeBounds();
-      this.el.unbind('mousemove');
-      this.el.unbind('mouseover');
-      this.body.bind('mousemove', function(e) {
-        return _this.onMouseMove(e);
-      });
-      this.lens.show().css({
-        opacity: 1,
-        cursor: this.settings.css.cursor
-      });
+      if (this.el.not(':visible')) {
+        this._makeBounds();
+        console.log('make bounds');
+        this.lens.show();
+        this.off = false;
+      }
       return this;
     };
 
     Snipe.prototype.hide = function() {
-      var _this = this;
-      this.el.bind('mouseover', function(e) {
-        return _this.show();
-      });
-      this.body.unbind('mousemove');
-      this.lens.css({
-        opacity: 0,
-        cursor: 'default'
-      }).hide();
+      this.lens.hide();
+      this.off = true;
       return this;
     };
 
