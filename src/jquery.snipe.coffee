@@ -7,6 +7,7 @@ defaults =
   class:    'snipe-lens'
   size:     200
   ratio:    null
+  applyCss: true
 
   # Original image configuration
   image:
@@ -70,7 +71,11 @@ class Snipe
     Create the lens, apply CSS and keep a reference to it
     ###
     @lens     = $('<div>').addClass(@settings.class).css('display','none').appendTo('body')
-    @lens.css(@settings.css)
+
+    @lens.css @settings.css if @settings.applyCss
+
+    # Lens settings
+    @lens.css 'backgroundImage', "url(#{ @settings.zoom.url })"
 
     ###
     Listen to mousemove on the element
@@ -105,9 +110,6 @@ class Snipe
     @settings.zoom.width  ?= @el.data('width') or @settings.image.width
     @settings.zoom.height ?= @el.data('height') or @settings.image.height
     @settings.ratio       ?= @el.data('ratio') or null
-
-    # Lens settings
-    @settings.css.backgroundImage = "url(#{ @settings.zoom.url })"
 
   ###
   This method will be called on init

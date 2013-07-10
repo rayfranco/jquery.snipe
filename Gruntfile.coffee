@@ -5,14 +5,14 @@ module.exports = (grunt) ->
     coffee:
       compile:
         files:
-          'js/jquery.snipe.js': 'src/jquery.snipe.coffee'
+          'build/jquery.snipe.js': 'src/jquery.snipe.coffee'
 
     uglify:
       options:
         banner: '/*! <%= pkg.name %> - v<%= pkg.version %> - ' + '<%= grunt.template.today("yyyy-mm-dd") %> */'
       javascript:
         files:
-          'js/jquery.snipe.min.js': ['js/jquery.snipe.js']
+          'build/jquery.snipe.min.js': ['build/jquery.snipe.js']
 
     watch:
       src:
@@ -20,7 +20,7 @@ module.exports = (grunt) ->
         tasks: 'coffee'
       js:
         files: [
-          'js/jquery.snipe.js'
+          'build/jquery.snipe.js'
         ]
         tasks: ['test','uglify']
         options:
@@ -28,7 +28,7 @@ module.exports = (grunt) ->
       demo:
         files: [
           'demo/**/*'
-          'js/jquery.snipe.min.js'
+          'build/jquery.snipe.min.js'
         ]
         options:
           livereload: true
@@ -49,7 +49,7 @@ module.exports = (grunt) ->
 
     jasmine:
       plugin:
-        src: 'js/jquery.snipe.js'
+        src: 'build/jquery.snipe.js'
         options:
           specs: 'spec/SnipeSpec.js'
           template: 'spec/SpecRunner.tmpl'

@@ -12,6 +12,7 @@
     "class": 'snipe-lens',
     size: 200,
     ratio: null,
+    applyCss: true,
     image: {
       url: null,
       width: null,
@@ -95,7 +96,10 @@
       */
 
       this.lens = $('<div>').addClass(this.settings["class"]).css('display', 'none').appendTo('body');
-      this.lens.css(this.settings.css);
+      if (this.settings.applyCss) {
+        this.lens.css(this.settings.css);
+      }
+      this.lens.css('backgroundImage', "url(" + this.settings.zoom.url + ")");
       /*
       Listen to mousemove on the element
       */
@@ -140,10 +144,7 @@
       if ((_base6 = this.settings.zoom).height == null) {
         _base6.height = this.el.data('height') || this.settings.image.height;
       }
-      if ((_base7 = this.settings).ratio == null) {
-        _base7.ratio = this.el.data('ratio') || null;
-      }
-      return this.settings.css.backgroundImage = "url(" + this.settings.zoom.url + ")";
+      return (_base7 = this.settings).ratio != null ? (_base7 = this.settings).ratio : _base7.ratio = this.el.data('ratio') || null;
     };
 
     /*
