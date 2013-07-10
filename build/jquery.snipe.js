@@ -33,7 +33,8 @@
       position: 'absolute',
       top: 0,
       left: 0,
-      backgroundRepeat: 'no-repeat'
+      backgroundRepeat: 'no-repeat',
+      zIndex: 2147483647
     },
     zoomin: function(lens) {},
     zoomout: function(lens) {},
@@ -173,13 +174,23 @@
     };
 
     /*
-    This method should be called on every reflow
+    This will calcultate the background based on mouse position
     */
 
 
-    Snipe.prototype._updateBounds = function() {
-      this.offset = this.img.offset();
-      return this.bounds.update(this.offset.top, this.offset.left + this.img.width(), this.offset.top + this.img.height(), this.offset.left);
+    Snipe.prototype._calculateLensBackground = function() {
+      this.backgroundX = -((this.mouse.x - this.offset.left) * this.ratioX - this.settings.size * .5);
+      return this.backgroundY = -((this.mouse.y - this.offset.top) * this.ratioY - this.settings.size * .5);
+    };
+
+    Snipe.prototype._updateLens = function() {
+      this._calculateLensBackground();
+      this.lens.css({
+        left: this.mouse.x - this.settings.size * .5,
+        top: this.mouse.y - this.settings.size * .5,
+        backgroundPosition: "" + this.backgroundX + "px " + this.backgroundY + "px"
+      });
+      return this.lens[0].offsetHeight;
     };
 
     /*
@@ -188,19 +199,15 @@
 
 
     Snipe.prototype._onMouseMove = function(e) {
-      var backgroundX, backgroundY;
       if (!this.bounds.contains(e.pageX, e.pageY)) {
         this.hide();
         return;
       }
-      backgroundX = -((e.pageX - this.offset.left) * this.ratioX - this.settings.size * .5);
-      backgroundY = -((e.pageY - this.offset.top) * this.ratioY - this.settings.size * .5);
-      this.lens.css({
-        left: e.pageX - this.settings.size * .5,
-        top: e.pageY - this.settings.size * .5,
-        backgroundPosition: "" + backgroundX + "px " + backgroundY + "px"
-      });
-      return backgroundX = backgroundY = null;
+      this.mouse = {
+        x: e.pageX,
+        y: e.pageY
+      };
+      return this._updateLens();
     };
 
     /*
@@ -212,8 +219,10 @@
       var _this = this;
       this.hide();
       $('body').on('mousemove.snipe', function(e) {
-        e.stopPropagation();
-        return _this._onMouseMove.call(_this, e);
+        if (_this.lens.is(':visible')) {
+          e.stopPropagation();
+          return _this._onMouseMove.call(_this, e);
+        }
       });
       return this.img.on('mousemove.snipe', function(e) {
         e.stopPropagation();
@@ -229,17 +238,24 @@
 
 
     Snipe.prototype.show = function() {
+      var _base;
       if (this.el.not(':visible')) {
         this._makeBounds();
-        console.log('make bounds');
         this.lens.show();
+        if (typeof (_base = this.settings).zoomin === "function") {
+          _base.zoomin(this.lens);
+        }
         this.off = false;
       }
       return this;
     };
 
     Snipe.prototype.hide = function() {
+      var _base;
       this.lens.hide();
+      if (typeof (_base = this.settings).zoomout === "function") {
+        _base.zoomout(this.lens);
+      }
       this.off = true;
       return this;
     };

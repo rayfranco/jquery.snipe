@@ -22,7 +22,7 @@ module.exports = (grunt) ->
         files: [
           'build/jquery.snipe.js'
         ]
-        tasks: ['test','uglify']
+        tasks: ['jasmine','uglify']
         options:
           livereload: true
       demo:

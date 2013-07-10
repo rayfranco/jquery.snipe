@@ -33,6 +33,7 @@ defaults =
     top:        0
     left:       0
     backgroundRepeat: 'no-repeat'
+    zIndex: 2147483647
 
   zoomin:   (lens) ->
   zoomout:  (lens) ->
@@ -130,11 +131,22 @@ class Snipe
       @ratioY = @settings.zoom.height / @settings.image.height
 
   ###
-  This method should be called on every reflow
+  This will calcultate the background based on mouse position
   ###
-  _updateBounds: () ->
-    @offset = @img.offset()
-    @bounds.update @offset.top, @offset.left + @img.width(), @offset.top + @img.height(), @offset.left
+  _calculateLensBackground: ->
+    @backgroundX = -((@mouse.x - @offset.left) * @ratioX - @settings.size * .5) 
+    @backgroundY = -((@mouse.y - @offset.top) * @ratioY - @settings.size * .5)
+
+  _updateLens: ->
+    @_calculateLensBackground()
+
+    @lens.css
+      left: @mouse.x - @settings.size * .5
+      top: @mouse.y - @settings.size * .5
+      backgroundPosition: "#{@backgroundX}px #{@backgroundY}px"
+
+    # Force redraw
+    @lens[0].offsetHeight
 
   ###
   This method will be called when the mouse move over the element
@@ -144,18 +156,11 @@ class Snipe
     if not @bounds.contains e.pageX, e.pageY
       @hide()
       return
-
-    # Calculate background position
-    backgroundX = -((e.pageX - @offset.left) * @ratioX - @settings.size * .5) 
-    backgroundY = -((e.pageY - @offset.top) * @ratioY - @settings.size * .5)
-
-    # Apply CSS modifications
-    @lens.css
-      left: e.pageX - @settings.size * .5
-      top: e.pageY - @settings.size * .5
-      backgroundPosition: "#{backgroundX}px #{backgroundY}px"
-
-    backgroundX = backgroundY = null
+    @mouse =
+      x: e.pageX
+      y: e.pageY
+    @_updateLens()
+    
 
   ###
   This will be called when everything is ready
@@ -163,8 +168,9 @@ class Snipe
   _run: () ->
     @hide()
     $('body').on 'mousemove.snipe', (e) => 
-      e.stopPropagation()
-      @_onMouseMove.call(@,e)
+      if @lens.is(':visible')
+        e.stopPropagation()
+        @_onMouseMove.call(@,e)
     @img.on 'mousemove.snipe', (e) =>
       e.stopPropagation()
       @show.call(@) if @off
@@ -177,13 +183,14 @@ class Snipe
     if @el.not(':visible')
       # Reset bounds
       @_makeBounds()
-      console.log 'make bounds'
       @lens.show()
+      @settings.zoomin?(@lens)
       @off = false
     @
 
   hide: ->
     @lens.hide()
+    @settings.zoomout?(@lens)
     @off = true
     @
 
